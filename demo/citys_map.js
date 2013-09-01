@@ -119,3 +119,108 @@ LocationPool.prototype = {
 window.LocationPool = LocationPool;
 
 })();
+
+
+
+(function(){
+
+var w = 800,
+    h = 60;
+    r = 30;
+
+var ScheduleLine = function(ele, citys){
+    this.ele = ele;
+    var nodes = [];
+    $.each(citys, function(i, city){
+        var node = {'city' : city}
+        node['x'] = r + i * (w - r*2) / citys.length;
+        node['y'] = h/2;
+        node['radius'] = r;
+        node['index'] = i;
+        nodes.push(node);
+    });
+    this.nodes = nodes;
+
+    var links = [];
+    $.each(this.nodes, function(i, node){
+        if (i > 0){
+            links.push({'source' : nodes[i-1], 'target' : nodes[i]});
+        }
+    });
+    this.links = links
+    this.svg = null;
+    this.color = d3.scale.category10();
+}
+
+ScheduleLine.prototype = {
+    init : function(){
+        var nodes = this.nodes;
+        var links = this.links;
+
+        var svg = d3.select(this.ele).append("svg:svg")
+            .attr("width", w)
+            .attr("height", h);
+
+        svg.append("svg:defs").selectAll("marker")
+            .data(["marker-arrow"])
+            .enter().append("svg:marker")
+                .attr("id", String)
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 10)
+                .attr("refY", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("svg:path")
+                    .attr("d", "M0,-5L10,0L0,5");
+
+        var color = this.color;
+
+        var node = svg.selectAll("g.node")
+            .data(nodes)
+        .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+        node.append("svg:circle")
+            .attr("r", function(d) { return d.radius })
+            .style("fill", function(d, i) { 
+                if (i == 0 || i == nodes.length -1){
+                        return color(2);
+                }
+                else {
+                    return color(1);
+                }
+            })
+
+        node.append("text")
+            .attr("dy", ".3em")
+            .style("text-anchor", "middle")
+            .text(function(d) { return d.city; });
+
+        var link = svg.selectAll("g.link")
+            .data(links)
+            .enter().append("g")
+                .attr("class", "link");
+
+        link.append('svg:path')
+            .attr('d', function(d){
+                return 'M' + (d.source.x + d.source.radius) + ',' + d.source.y 
+                       + 'L' + (d.target.x - d.source.radius) + ',' + d.target.y;
+            })
+            .attr("stroke", function(d){ return  "#999"; })
+            .attr("marker-end", function(d){ return "url(#marker-arrow)"} )
+            ;
+
+        link.append('svg:text')
+            .attr("x", function(d){ return (d.source.x + d.target.x)/2 - 5 })
+            .attr("y", function(d){ return d.source.y - 5; })
+            .attr("class", "shadow")
+            .text(function(d) { return String(d.target.index);});
+
+    }
+}
+
+window.ScheduleLine = ScheduleLine;
+
+})();
