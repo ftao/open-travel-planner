@@ -7,16 +7,9 @@ var padding = 30;
 var LocationPool = function(ele){
     this.ele = ele;
     this.nodes = [];
-    /*
-    this.nodes = [
-        {"city" : "上海", "src" : true, "radius" : 50},
-        {"city" : "兰州", "radius" : 30},
-        {"city" : "敦煌", "radius" : 30},
-        {"city" : "西安", "radius" : 30}
-    ];
-    */
     this.svg = null;
     this.force = null;
+    this.color = d3.scale.category10();
 }
 
 LocationPool.prototype = {
@@ -80,7 +73,7 @@ LocationPool.prototype = {
     },
 
     restart : function(){
-        var color = d3.scale.category10();
+        var color = this.color;
         var force = this.force;
         var nodes = this.nodes;
         var svg = this.svg;
@@ -95,13 +88,16 @@ LocationPool.prototype = {
             .attr("r", function(d) { return d.radius - 2; })
             .style("fill", function(d, i) { 
                 if (d.locationType == 'startLocation') {
-                    return color(0);
+                    return color(2);
                 }
                 else {
-                    return color((i % 9) + 1); 
+                    var c = i % 5;
+                    if (c == 2) {
+                        c = 5;
+                    }
+                    return color(c);
                 }
             });
-
         node.append("text")
             .attr("dy", ".3em")
             .style("text-anchor", "middle")
