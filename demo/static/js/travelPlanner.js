@@ -15,6 +15,10 @@ function travelPlanner($scope){
 		$scope.selectedPlan = plan;
 	}
 
+	$scope.travelLine = function(travelLine){
+
+	}
+
 	$scope.planDetails = [
 		{
 			travelLine : ["上海","兰州","敦煌","张掖","西安","上海"],//行程线

@@ -3,9 +3,22 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <link href="./static/css/bootstrap.min.css" rel="stylesheet">
         <style>
+          .planTravels {
+            font-size:20px;
+          }
           .travel span {
-            font-size:24px;
+            font-size:20px;
             font-weight:bold;
+          }
+          i.icon-flight {
+            width:48px;
+            height:48px;
+            background-image:url(./static/img/023.png);
+          }
+          i.icon-train {
+            width:48px;
+            height:48px;
+            background-image:url(./static/img/044.png);
           }
         </style>
         <script type="text/javascript" src="./static/js/jquery-2.0.3.min.js"></script>
@@ -24,6 +37,7 @@
                         console.log("add location:", location);
                         console.log("location type:", locationType);
                         locPool.addCity(location, locationType)
+                        $(this).val("");
                     }
                 });
 
@@ -34,20 +48,40 @@
                       travels : [//行程列表
                         {//行程
                           travelLine : ["上海","兰州"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'flight',
+                            'no' : 'MU2354',
+                            'depart' : '16:20',
+                            'arrive' : '19:35',
+                          }]
                         },
                         {
                           travelLine : ["兰州","敦煌"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'K9667',
+                            'depart' : '17:55',
+                            'arrive' : '07:46',
+                          }]
                         },
                         {
                           travelLine : ["敦煌","张掖"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'K9668',
+                            'depart' : '18:58',
+                            'arrive' : '02:10',
+                          }]
                         },
                         {
                           travelLine : ["张掖","上海"],
-                          trafficWay : []
-                        },
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'T54',
+                            'depart' : '07:49',
+                            'arrive' : '14:31',
+                          }],
+                        }
                       ]
                     },
                     {
@@ -56,23 +90,48 @@
                       travels : [
                         {
                           travelLine : ["上海","兰州"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'T116',
+                            'depart' : '15:42',
+                            'arrive' : '15:05',
+                          }],
                         },
                         {
                           travelLine : ["兰州","张掖"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'T9201',
+                            'depart' : '22:00',
+                            'arrive' : '03:23',
+                          }],
                         },
                         {
                           travelLine : ["张掖","敦煌"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'K9667',
+                            'depart' : '00:19',
+                            'arrive' : '07:46',
+                          }],
                         },
                         {
                           travelLine : ["敦煌","兰州"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'K9668',
+                            'depart' : '18:58',
+                            'arrive' : '09:18',
+                          }]
                         },
                         {
                           travelLine : ["兰州","上海"],
-                          trafficWay : []
+                          trafficWay : [{
+                            'type' : 'train',
+                            'no' : 'T118',
+                            'depart' : '12:30',
+                            'arrive' : '13:05',
+                          }]
                         }
                       ]
                     }];
@@ -99,6 +158,12 @@
                         var template = $('#travel-template').clone().removeAttr('id').css('display', 'block');
                         var text = "<span>" + (1+index) + "</span>" ;
                         template.find(".travel").html(text);
+                        $.each(item.trafficWay, function(index, way){
+                          template.find('.travel-options .list-group').append(
+                              '<i class="icon icon-' + way.type + '"/>'
+                              + way.no + '  ' + way.depart + ' - ' + way.arrive
+                          );
+                        });
                         $('.planTravels').append(template);
                       });
 
@@ -159,18 +224,8 @@
 
         <div class="row" id="travel-template" style="display:none;">
             <div class="col-lg-1 travel"></div>
-            <div class="col-lg-11">
+            <div class="col-lg-11 travel-options">
                 <div class="list-group">
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">火车</h4>
-                        <p class="list-group-item-text">D1 17:20 -- 18:20</p>
-                        <p class="list-group-item-text">D2 18:40 -- 19:40</p>
-                    </div>
-                    <div class="list-group-item">
-                        <h4 class="list-group-item-heading">汽车</h4>
-                        <p class="list-group-item-text">17:20 -- 18:20</p>
-                        <p class="list-group-item-text">18:40 -- 19:40</p>
-                    </div>
                 </div>
             </div>
         </div>
